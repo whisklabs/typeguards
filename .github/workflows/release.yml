@@ -7,33 +7,35 @@ on:
 jobs:
   release:
     name: Release
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     if: "!contains(github.event.head_commit.message, 'skip ci')"
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
-        with: { fetch-depth: 0 }
-      - name: Setup Node.js
-        uses: actions/setup-node@v1
+        uses: actions/checkout@v3
         with:
-          node-version: 12
-      - name: Set Branch
-        id: branch
-        run: |
-          BNAME="$(echo -n ${GITHUB_REF##*/} | sed 's#/#-#g' | tr '[:upper:]' '[:lower:]')"
-          BID="$GITHUB_RUN_NUMBER-$(date +%s)"
-          echo ::set-env name=BRANCH_NAME::$BNAME
-          echo ::set-env name=APP_BUILD::$BID-$GITHUB_SHA
-          echo ::set-env name=BUILD_ID::$BID
+          fetch-depth: 0
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'npm'
       - name: Setup GIT
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           mkdir -p ~/.ssh
           ssh-keyscan github.com > ~/.ssh/known_hosts
+      - name: Set Branch
+        id: branch
+        run: |
+          BNAME="$(echo -n ${GITHUB_REF##*/} | sed 's#/#-#g' | tr '[:upper:]' '[:lower:]')"
+          BID="$GITHUB_RUN_NUMBER-$(date +%s)"
+          echo "BRANCH_NAME=$BNAME" >> $GITHUB_ENV
+          echo "APP_BUILD=$BID-$GITHUB_SHA" >> $GITHUB_ENV
+          echo "BUILD_ID=$BID" >> $GITHUB_ENV
       - name: Setup NPM
         run: |
           echo "Setup NPM"

@@ -2,8 +2,8 @@
 
 const toString = Object.prototype.toString;
 type ExtractPlus<T, U, K> = any extends T ? K : T extends U ? T : K;
-type ObjectCheck<T> = T extends object ? T : Record<any, unknown>;
-type Maybe<T> = T | null | undefined | unknown;
+type ObjectCheck<T> = T extends Record<any, unknown> ? T : Record<any, unknown>;
+type Maybe<T> = T | null | undefined;
 
 export function isPresent<T>(value: T): value is Exclude<T, undefined | null> {
   return value !== undefined && value !== null;
@@ -18,7 +18,7 @@ export function isDefined<T>(value: T): value is Exclude<T, undefined> {
 }
 
 // http://jsperf.com/isobject4
-export function isObject<T extends Maybe<{}>>(value: T): value is ObjectCheck<NonNullable<T>> {
+export function isObject<T extends Maybe<{}>>(value: T): value is ObjectCheck<T> {
   return value !== null && typeof value === 'object';
 }
 
@@ -35,8 +35,8 @@ type NumberPlus = Number & {
   isNaN(num: number): boolean;
 };
 
-export const isNaN: (num: number) => boolean = isFunction(((Number as unknown) as NumberPlus).isNaN)
-  ? ((Number as unknown) as NumberPlus).isNaN
+export const isNaN: (num: number) => boolean = isFunction((Number as unknown as NumberPlus).isNaN)
+  ? (Number as unknown as NumberPlus).isNaN
   : (num: number) => num !== num;
 
 export function isDate(value: unknown): value is Date {
