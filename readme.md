@@ -1,15 +1,30 @@
 # TypeGuards
 
+A lightweight TypeScript library providing runtime type checking utilities with proper TypeScript type narrowing.
+
 ## Install
 
 ```bash
-npm i @whisklabs/typesguards
+npm i @whisklabs/typeguards
 ```
 
 ## Usage
 
 ```ts
-import { ... } from '@whisklabs/typesguards';
+import { isString, isNumber, isArray } from '@whisklabs/typeguards';
+
+// Type narrowing works automatically
+function processValue(value: unknown) {
+  if (isString(value)) {
+    // value is now typed as string
+    console.log(value.toUpperCase());
+  }
+  
+  if (isArray(value)) {
+    // value is now typed as unknown[]
+    console.log(value.length);
+  }
+}
 ```
 
 ## Functions
@@ -36,3 +51,7 @@ import { ... } from '@whisklabs/typesguards';
 - **isPromiseLike** - Promise-like object
 - **isArrayBuffer** - any type of ArrayBuffer
 - **isTypedArray** - any type of TypedArray
+
+## Documentation
+
+- **[Newcomer's Guide](NEWCOMER.md)** - Comprehensive guide for developers new to this project, including architecture details, development patterns, and contributing guidelines
