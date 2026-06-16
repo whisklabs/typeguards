@@ -1,0 +1,17 @@
+name: SBOM
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  sbom:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: whisklabs/gha-workflows/actions/node_upload_sbom@master
+        with:
+          dt_token: ${{ secrets.DT_TOKEN }}
+          tags: "dist:published"
+          sbom_type: library
